@@ -64,9 +64,3 @@ for x in bfs_no_graph_path(('123ABC','','L'),('','123ABC','R')):
     r = r.replace('1','M').replace('2','M').replace('3','M')
     print('{}. {}{}{}'.format(i,l,('<-','->')[b == 'R'],r))
     i += 1
-            
-            
-            
-    
-    
-    
