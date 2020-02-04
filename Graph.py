@@ -1,4 +1,4 @@
-words = [line.strip() for line in open("wordlist.txt")]
+words = [line.strip() for line in open("firstProject/wordlist.txt")]
 words = set(w for w in words if len(w) == 4)
 
 class Graph(dict):
