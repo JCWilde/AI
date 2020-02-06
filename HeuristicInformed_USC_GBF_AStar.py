@@ -23,6 +23,27 @@ def ucs(start, goal, get_neighbors):
     return []
 
 
+def aStar(start, goal, get_neighbors, heuristic):
+    info = {start: (0, None)}
+    heap = [(0, start)]
+    while heap:
+        pri, v = heappop(heap)
+        if v == goal:
+            L = []
+            x = goal
+            while x != None:
+                L.append(x)
+                x = info[x][1]
+            L.reverse()
+            return L
+        cost = info[v][0]
+        for weight, u in get_neighbors(v):
+            if u not in info or weight + cost < info[u][0]:
+                info[u] = (weight + cost, v)
+                heappush(heap, (weight + cost, u))
+    return []
+
+
 # 1 min, 2 min, 5 min, 10 min.  The goal is to find the shortest crossing time.
 def flashlight_neighbors(v):
     N = []

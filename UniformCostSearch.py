@@ -19,7 +19,6 @@ def ucs(start, goal, get_neighbors):
             if u not in info or cost + weight < info[u][0]:
                 info[u] = (cost + weight, v)
                 heappush(heap, (cost + weight, u))
-
     return []
 
 
