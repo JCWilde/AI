@@ -84,34 +84,65 @@ def gbf(start, goal, get_neighbors, heuristic):
     return []
 
 
+board = """
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000
+00000000000000000000"""
 
-# 1 min, 2 min, 5 min, 10 min.  The goal is to find the shortest crossing time.
-def flashlight_neighbors(v):
-    N = []
-    left, right, flashlight = v
-
-    if flashlight == 'L':
-        for x in left:
-            new_left = left.replace(x, '')
-            new_right = ''.join(sorted(right + x))
-            N.append((int(x, 16), (new_left, new_right, 'R')))
-        for x, y in combinations(left, 2):
-            new_left = left.replace(x, '').replace(y, '')
-            new_right = ''.join(sorted(right + x + y))
-            N.append((max(int(x, 16), int(y, 16)), (new_left, new_right, 'R')))
-    else:
-        for x in right:
-            new_right = right.replace(x, '')
-            new_left = ''.join(sorted(left + x))
-            N.append((int(x, 16), (new_left, new_right, 'L')))
-        for x, y in combinations(right, 2):
-            new_right = right.replace(x, '').replace(y, '')
-            new_left = ''.join(sorted(left + x + y))
-            N.append((max(int(x, 16), int(y, 16)), (new_left, new_right, 'R')))
-    return N
+board = [list(x) for x in board[1:].split('\n')]
 
 
-res = ucs(("125a", "", 'L'), ('', '125a', 'R'), flashlight_neighbors)
+def get_neighbors1(v):
+    r, c = v
+    N = [(r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)]
+    return [(1, (a, b)) for a, b in N if 0 <= a < 20 and 0 <= b < 20 and board[a][b] == '0']
 
-for l, r, d in res:
-    print('{} {} {}'.format(l, ('->', '<-')[d == "L"], r))
+
+def get_neighbors2(v):
+    r, c = v
+    N = [(r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1), (r + 1, c + 1), (r - 1, c + 1), (r + 1, c - 1), (r - 1, c - 1)]
+    return [(1, (a, b)) for a, b in N if 0 <= a < 20 and 0 <= b < 20 and board[a][b] == '0']
+
+
+def manhattan(v, goal):
+    r, c = v
+    rg, cg = goal
+    return abs(rg - r) + abs(cg - c)
+
+
+def euclidean(v, goal):
+    r, c = v
+    rg, cg = goal
+    return ((rg - r) ** 2 + (cg - c) ** 2) ** .5
+
+
+# L = ucs((0, 0), (19, 19), get_neighbors1)
+L = gbf((0, 0), (19, 19), get_neighbors1, euclidean)
+
+print(L)
+
+for i in range(len(L)):
+    r, c = L[i]
+    board[r][c] = str(i)
+
+for i in range(len(board)):
+    for j in range(len(board[i])):
+        print('{:3s} '.format(board[i][j]), end = "")
+    print("")
