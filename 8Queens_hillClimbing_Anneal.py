@@ -1,4 +1,5 @@
-from random import choice
+from random import choice, randint, random
+from math import exp
 
 
 def hill_climbing(start, h):
@@ -7,6 +8,26 @@ def hill_climbing(start, h):
         N = sorted([(h(n), n) for n in get_neighbors(v)])
         best = N[0][0]
         v = choice([n[1] for n in N if n[0] == best])
+    return v
+
+
+def anneal(start, h):
+    temp = 10
+    num_iter = 100
+    stop_temp = 1
+
+    v = start
+
+    while h(v) != stop_temp and h(v) != 0:
+        row = randint(0, len(v) - 1)
+        col = randint(0, len(v) - 1)
+        n = v[:row] + (col, ) + v[row+1:]
+        if h(n) < h(v):
+            v = n
+        else:
+            if exp((h(v)-h(n))/temp) > random():
+                v = n
+        temp *= .99
     return v
 
 
@@ -48,7 +69,7 @@ def display(t):
         print()
 
 
-t = (0, ) * 8
+t = (0, ) * 4
 display(t)
 print()
-display(hill_climbing(t, num_attacking))
+display(anneal(t, num_attacking))
