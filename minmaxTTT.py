@@ -11,7 +11,7 @@ def listener(r, c):
 
         player = 'X' if player == 'O' else 'O'
         w = check_winner(board)
-        if  w == 'X':
+        if w == 'X':
             print('X wins')
         elif w == 'O':
             print('O Wins')
@@ -40,7 +40,7 @@ def check_winner(B):
         return B[2]
 
     if B.count(' ') == 0:
-        return 'T'
+        return 'D'
 
     return 'N'
 
