@@ -1,4 +1,9 @@
 from tkinter import *
+from tkinter.messagebox import *
+
+
+MAX = 1
+MIN = 2
 
 
 def listener(r, c):
@@ -7,16 +12,44 @@ def listener(r, c):
         button[r][c].configure(text=player)
 
         p = 3 * r + c
-        board = board[:p] + (player, ) + board[p + 1:]
 
-        player = 'X' if player == 'O' else 'O'
+        board = board[:p] + (player, ) + board[p + 1:]
+        root.update()
+
         w = check_winner(board)
         if w == 'X':
-            print('X wins')
+            showinfo(title='Game Over', message='X Wins!!!')
+            exit()
         elif w == 'O':
-            print('O Wins')
+            showinfo(title='Game Over', message='O Wins!!!')
+            exit()
         elif w == 'D':
-            print('Draw')
+            showinfo(title='Game Over', message="It's a Draw...")
+            exit()
+
+        player = 'O'
+        spot = choose_move(board, MIN)
+        print(spot)
+
+        r, c = spot // 3, spot % 3
+        button[r][c].configure(text=player)
+        p = 3 * r + c
+        board = board[:p] + (player,) + board[p + 1:]
+
+        w = check_winner(board)
+        if w == 'X':
+            showinfo(title='Game Over', message='X Wins!!!')
+            exit()
+        elif w == 'O':
+            showinfo(title='Game Over', message='O Wins!!!')
+            exit()
+        elif w == 'D':
+            showinfo(title='Game Over', message="It's a Draw...")
+            exit()
+        player = 'X'
+        #print(choose_move(board, MAX))
+
+
 
 
 def check_winner(B):
@@ -43,6 +76,32 @@ def check_winner(B):
         return 'D'
 
     return 'N'
+
+
+def minimax(v, player):
+    c = check_winner(v)
+    if c != 'N':
+        util = {'X': 10, 'O': -10, 'D': 0}
+        return util[c]
+
+    spots = [i for i in range(9) if v[i] == ' ']
+    N = []
+    for i in spots:
+        N.append(v[:i] + ('O' if player == MIN else 'X',) + v[i + 1:])
+
+    results = [minimax(w, MAX if player == MIN else MIN) for w in N]
+    return max(results) if player == MAX else min(results)
+
+
+def choose_move(v, player):
+    spots = [i for i in range(9) if v[i] == ' ']
+    N = []
+    for i in spots:
+        N.append(v[:i] + ('O' if player == MIN else 'X',) + v[i + 1:])
+
+    results = [(minimax(w, MAX if player == MIN else MIN), spots[N.index(w)]) for w in N]
+    print(sorted(results, key=lambda x: x[1]))
+    return max(results)[1] if player == MAX else min(results)[1]
 
 
 root = Tk()
