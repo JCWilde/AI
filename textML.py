@@ -2,8 +2,8 @@ import zipfile
 from random import choice
 
 
-def get_text(domain):
-    str = ""
+def get_zip_text(domain):
+    s = ""
     with zipfile.ZipFile(domain) as z:
         for filename in z.namelist():
             for f in z.open(filename):
@@ -45,8 +45,7 @@ def generate_new_text(length=100):
     return string[0].upper() + string[1:]
 
 
-str = get_text('commencement_speeches.zip')
-d = eval_text(str)
+d = eval_text(get_zip_text('commencement_speeches.zip'))
 string = generate_new_text(1000)
 
 for c in string:
