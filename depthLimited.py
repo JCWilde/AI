@@ -3,12 +3,14 @@ words = [line.strip() for line in open("wordlist.txt")]
 words = set(w for w in words if len(w) == 4)
 alpha = 'abcdefghijklmnopqrstuvwxyz'
 
+
 class Graph(dict):
     def add(self,v):
         self[v] = set()
     def add_edge(self,u,v):
         self[v].add(u)
         self[u].add(v)
+
 
 def depth_limited_path(G, start, goal, limit):
     waiting = [(start, 0)]
@@ -31,14 +33,12 @@ def depth_limited_path(G, start, goal, limit):
                 waiting.append((c, current_depth + 1))
     return []
 
-def iterative_deepening_path(G, start, goal, max_d):
-    i = 0
 
-    while i < max_d:
+def iterative_deepening_path(G, start, goal, max_d):
+    for i in range(max_d):
         result = depth_limited_path(G, start, goal, i)
         if result != []:
             return result
-        i += 1
 
 G = Graph()
 for w in words:
